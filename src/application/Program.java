@@ -1,6 +1,7 @@
 package application;
 
-import entities.Product;
+import entities.Employee;
+
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -10,39 +11,25 @@ public class Program {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
 
-
-
-        System.out.println("Enter product data: ");
-
         System.out.print("Name: ");
-        String name = sc.next();
+        String name = sc.nextLine();
 
-        System.out.print("Price: ");
-        double price = sc.nextDouble();
+        System.out.print("Gross Salary: ");
+        double grossSalary = sc.nextDouble();
 
-        System.out.print("Quantity: ");
-        int quantity = sc.nextInt();
+        System.out.print("Tax: ");
+        double tax = sc.nextDouble();
 
-        Product product = new Product(name, price, quantity);
+        Employee employee = new Employee(name, grossSalary, tax);
+        employee.NetSalary();
 
-        System.out.println();
-        System.out.println("Product data: " + product);
+        System.out.println("Employee: " + employee);
 
-        System.out.println();
-        System.out.print("Enter the number of products to be added in stock: ");
-        int variantQuantity= sc.nextInt();
-        product.addProducts(variantQuantity);
+        System.out.print("Wich percentage to increase salary? ");
+        double percentage = sc.nextDouble();
+        employee.increaseSalary(percentage);
 
-        System.out.println();
-        System.out.println("Updated data: " + product);
-
-        System.out.println();
-        System.out.print("Enter the number of products to be removed in stock: ");
-        variantQuantity = sc.nextInt();
-        product.removeProducts(variantQuantity);
-
-        System.out.println();
-        System.out.println("Updated data: " + product);
+        System.out.println("Updated data: " + employee);
 
         sc.close();
     }
