@@ -1,7 +1,6 @@
 package application;
 
-import entities.Student;
-import util.CurrencyConverter;
+import entities.Account;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -11,18 +10,36 @@ public class Program {
 
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
-        CurrencyConverter currencyConverter = new CurrencyConverter();
 
-        System.out.print("What's the dollar price? : ");
-        double dollarPrice = sc.nextDouble();
+        System.out.print("Enter account number: ");
+        int accountNumber = sc.nextInt();
 
-        System.out.print("How many dollars will be bought? ");
-        double dollarAmount = sc.nextDouble();
+        System.out.print("Enter account holder: ");
+        sc.nextLine();
+        String holder = sc.nextLine();
 
-        System.out.println("Amount to be paid in reais: " + currencyConverter.toReal(dollarPrice, dollarAmount));
+        Account account = new Account(accountNumber, holder, 0);
 
-        sc.close();
+        System.out.print("Is there a initial value? (y/n)? ");
+        char a = sc.next().charAt(0);
 
+        if (a == 'y') {
+            System.out.print("Enter initial deposit value: ");
+            double amount = sc.nextDouble();
+            account.addBalance(amount);
+        }
+        System.out.println("Account data: " + account);
 
+        System.out.print("Enter a deposit value: ");
+        double amount = sc.nextDouble();
+        account.addBalance(amount);
+
+        System.out.println("Updated account data: " + account);
+
+        System.out.print("Enter a withdraw value: ");
+        amount = sc.nextDouble();
+        account.withdrawBalance(amount);
+
+        System.out.println("Updated data: " + account);
     }
 }
