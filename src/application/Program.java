@@ -1,68 +1,69 @@
 package application;
 
-import entities.Employee;
+import entities.Department;
+import entities.HourContract;
+import entities.Worker;
+import entities.enums.WorkerLevel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLOutput;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Program {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
 
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        List<Employee> list = new ArrayList<>();
+        System.out.print("Enter department name: ");
+        String departmentName = sc.nextLine();
 
-        System.out.print("How many employees will be registered? ");
-        int employees = sc.nextInt();
+        System.out.println("Enter worker data: ");
+        System.out.print("Name: ");
+        String workerName = sc.nextLine();
 
-        for (int x = 0; x < employees; x++) {
-            System.out.println("Employee #" + (x + 1) + ":");
+        System.out.print("Level: ");
+        String workerLevel = sc.nextLine();
 
-            System.out.print("Id: ");
-            int id = sc.nextInt();
+        System.out.print("Base Salary: ");
+        double baseSalary = sc.nextDouble();
 
-            sc.nextLine();
-            System.out.print("Name: ");
-            String name = sc.nextLine();
+        Worker worker = new Worker(workerName, WorkerLevel.valueOf(workerLevel), baseSalary, new Department(departmentName));
 
-            System.out.print("Salary: ");
-            double salary = sc.nextDouble();
+        System.out.print("How many contracts tothis worker? ");
+        int n = sc.nextInt();
 
-            Employee employee = new Employee(id, name, salary);
-            list.add(employee);
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter contract #" + (i+1) + " data: ");
+
+            System.out.print("Date (DD/MM/YYYY): ");
+            Date contractDate = sdf.parse(sc.next());
+
+            System.out.print("Value per hour: ");
+            double valuePerHour = sc.nextDouble();
+
+            System.out.print("Duration (hours): ");
+            int hours = sc.nextInt();
+
+            HourContract contract = new HourContract(contractDate, valuePerHour, hours);
+            worker.addContract(contract);
         }
 
-        System.out.print("Enter the employee id that will have salary increase: ");
-        int idIncrease = sc.nextInt();
+        System.out.println();
+        System.out.print("Enter month and year to calculate income (MM/YYYY): ");
+        String monthAndYear = sc.next();
+        int month = Integer.parseInt(monthAndYear.substring(0, 2));
+        int year = Integer.parseInt(monthAndYear.substring(3));
 
-        Integer pos = position(list, idIncrease);
-
-        if (pos == null) {
-
-            System.out.println("This id does not exist!");
-
-        } else {
-
-            System.out.print("Enter the percentage: ");
-            double percentage = sc.nextDouble();
-
-            list.get(pos).increaseSalary(percentage);
-        }
-        System.out.println("List of employees: ");
-        list.forEach(System.out :: println);
+        System.out.println("Name: " + worker.getName());
+        System.out.println("Department: " + worker.getDepartment().getName());
+        System.out.println("Income for " + monthAndYear + ": " + String.format("%.2f", worker.incoming(year, month)));
 
         sc.close();
     }
 
-    public static Integer position(List<Employee> list, int id) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId() == id) {
-                return i;
-            }
-        }
-        return null;
-    }
 }
