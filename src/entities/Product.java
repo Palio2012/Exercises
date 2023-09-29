@@ -2,10 +2,10 @@ package entities;
 
 public class Product {
 
-    private String name;
+    public String name;
     private Double price;
 
-    public Product () {
+    public Product() {
     }
 
     public Product(String name, Double price) {
@@ -28,7 +28,10 @@ public class Product {
     public void setPrice(Double price) {
         this.price = price;
     }
-    public String toString () {
-        return name;
+
+    public String priceTag() {
+        return  name +
+                " $ " +
+                price;
     }
 }

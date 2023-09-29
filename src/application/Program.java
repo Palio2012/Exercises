@@ -1,10 +1,9 @@
 package application;
 
-import entities.Client;
-import entities.Order;
-import entities.OrderItem;
+
+import entities.ImportedProduct;
 import entities.Product;
-import entities.enums.OrderStatus;
+import entities.UsedProduct;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,62 +14,43 @@ public class Program {
 
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
+        List<Product> products = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        SimpleDateFormat sdfBirth = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat sdfOrder = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
-        Order order = new Order();
-        OrderItem orderItem = new OrderItem();
-
-        System.out.println("Enter client data: ");
-
-        System.out.print("Name: ");
-        String clientName = sc.nextLine();
-
-
-        System.out.print("Email: ");
-        String clientEmail = sc.nextLine();
-
-        System.out.print("Birth date (DD/MM/YYYY): ");
-        Date clientBirthDate = sdfBirth.parse(sc.next());
-
-        Client client = new Client(clientName, clientEmail, clientBirthDate);
-
-        System.out.println("Enter order data: ");
-        System.out.print("Status: ");
-        order.setStatus(OrderStatus.valueOf(sc.next()));
-
-        System.out.print("How many items to this order? ");
+        System.out.print("Enter the number of products: ");
         int n = sc.nextInt();
 
         for (int i = 0; i < n; i++) {
-            System.out.println("Enter item #" + (i+1) + " data: ");
+            System.out.println("Product #" + (i + 1) + " data: ");
+            System.out.print("Common, used or imported (c/u/i)? ");
+            char c = sc.next().charAt(0);
 
-            System.out.print("Product name: ");
+            System.out.print("Name: ");
             String productName = sc.nextLine();
             sc.next();
 
-            System.out.print("Product price: ");
+            System.out.print("Price: ");
             double productPrice = sc.nextDouble();
 
-            System.out.print("Product Quantity: ");
-            int productQuantity = sc.nextInt();
+            if (c == 'c') {
+                products.add(new Product(productName, productPrice));
+            } else if (c == 'u') {
+                System.out.print("Manufacture Date: (DD/MM/YYYY): ");
+                Date manufatcuredDate = sdf.parse(sc.next());
 
-            order.addItem(new OrderItem(productQuantity, productPrice, new Product(productName, productPrice)));
+                products.add(new UsedProduct(productName, productPrice, manufatcuredDate));
+            } else if (c == 'i') {
+                System.out.print("Customs Fee: ");
+                double customsFee = sc.nextDouble();
+
+                products.add(new ImportedProduct(productName, productPrice, customsFee));
+            }
         }
+        System.out.println("PRICE TAGS: ");
 
-        System.out.println("ORDER SUMMARY: ");
-
-        System.out.println("Order moment: " + sdfOrder.format(order.getMoment()));
-        System.out.println("Order Status: " + order.getStatus());
-        System.out.println("Client: " + client);
-        System.out.println("Order items: ");
-
-        order.getOrderItem().forEach(System.out :: println);
-
-        System.out.println("Total Price: $" + String.format("%.2f", order.total()));
-
-        sc.close();
+        for (Product prod : products) {
+            System.out.println(prod.priceTag());
+        }
     }
-
 }
+
