@@ -1,12 +1,9 @@
 package application;
 
 
-import entities.Company;
-import entities.Individual;
-import entities.TaxPayer;
+import model.entities.Account;
+import model.exceptions.DomainException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -17,50 +14,35 @@ public class Program {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
 
-        List<TaxPayer> list = new ArrayList<TaxPayer>();
+        try {
 
-        System.out.print("Enter the number of tax payers: ");
-        int n = sc.nextInt();
+            System.out.println("Enter account data: ");
 
-        for (int i = 0; i < n; i++) {
-            System.out.println("Tax payer #" + (i+1) + " data: ");
-            System.out.print("Individual or company (i/c) ?");
-            char type = sc.next().charAt(0);
+            System.out.print("Number: ");
+            int number = sc.nextInt();
 
-            System.out.print("Name: ");
-            String name = sc.next();
+            System.out.print("Holder: ");
+            String holder = sc.nextLine();
 
+            sc.next();
+            System.out.print("Initial Balance: ");
+            double balance = sc.nextDouble();
 
-            System.out.print("Anual income: ");
-            double anualIncome = sc.nextDouble();
+            System.out.print("Withdraw limit: ");
+            double withdrawLimit = sc.nextDouble();
 
-            if (type == 'i') {
-                System.out.print("Health Expenditires: ");
-                double healthExpenditures = sc.nextDouble();
+            Account account = new Account(number, holder, balance, withdrawLimit);
 
-                list.add(new Individual(name, anualIncome, healthExpenditures));
+            System.out.print("Enter the amount for withdraw: ");
+            double amount = sc.nextDouble();
 
-            }
-            else if (type == 'c') {
-                System.out.print("Number of employees: ");
-                int numberOfEmployees = sc.nextInt();
+            account.withdraw(amount);
 
-                list.add(new Company(name, anualIncome, numberOfEmployees));
-            }
+            System.out.print("New balance: " + account.getBalance());
         }
-
-        double sum = 0;
-        for (TaxPayer taxPayer : list) {
-            sum += taxPayer.tax();
+        catch (DomainException e) {
+            System.out.println(e.getMessage());
         }
-
-        System.out.println("TAXES PAID: ");
-
-        for (TaxPayer taxPayer : list) {
-            System.out.println(taxPayer.getName() + ": $ " + String.format("%.2f", taxPayer.tax()));
-        }
-
-        System.out.printf("TOTAL TAXES: %.2f", sum);
 
         sc.close();
     }
