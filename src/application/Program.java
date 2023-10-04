@@ -1,48 +1,35 @@
 package application;
 
 
-import model.entities.Account;
-import model.exceptions.DomainException;
+import model.entities.Employee;
 
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Program {
 
-   public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
 
-        try {
+        List<Employee> list = new ArrayList<>();
 
-            System.out.println("Enter account data: ");
+        list.add(new Employee("Maria", "maria@gmail.com", 3200.00));
+        list.add(new Employee("Alex", "alex@gmail.com", 1900.00));
+        list.add(new Employee("Marco", "marco@gmail.com", 1700.00));
+        list.add(new Employee("Bob", "bob@gmail.com", 3500.00));
+        list.add(new Employee("Ana", "ana@gmail.com", 2800.00));
 
-            System.out.print("Number: ");
-            int number = sc.nextInt();
+        System.out.print("Enter salary: ");
+        double salaryCriteria = sc.nextDouble();
 
-            System.out.print("Holder: ");
-            String holder = sc.nextLine();
+        list.stream().filter(x -> x.getSalary() > salaryCriteria).collect(Collectors.toList()).forEach(System.out :: println);
 
-            sc.next();
-            System.out.print("Initial Balance: ");
-            double balance = sc.nextDouble();
+        List <Double> list2 = Collections.singletonList(list.stream().filter(x -> x.getName().charAt(0) == 'M').map(x -> x.getSalary()).reduce(0.0, (x, y) -> x + y));
 
-            System.out.print("Withdraw limit: ");
-            double withdrawLimit = sc.nextDouble();
+        list2.forEach(System.out :: println);
 
-            Account account = new Account(number, holder, balance, withdrawLimit);
-
-            System.out.print("Enter the amount for withdraw: ");
-            double amount = sc.nextDouble();
-
-            account.withdraw(amount);
-
-            System.out.print("New balance: " + account.getBalance());
-        }
-        catch (DomainException e) {
-            System.out.println(e.getMessage());
-        }
 
         sc.close();
     }
